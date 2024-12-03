@@ -1,0 +1,12 @@
+@use 'styles/color.scss' as *;
+
+.wrapper {
+  box-sizing: border-box;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 73px;
+
+  border-bottom: 1px solid $border1;
+}

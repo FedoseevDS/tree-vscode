@@ -1,0 +1,10 @@
+@use 'styles/color.scss' as *;
+
+.wrapper {
+  display: flex;
+  gap: 30px;
+
+  & svg:hover path {
+    stroke: $hover1;
+  }
+}
