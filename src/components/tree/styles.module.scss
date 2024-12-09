@@ -16,6 +16,11 @@
   }
 }
 
+.itemActive {
+  background: $background3;
+  border: 1px solid $hover1;
+}
+
 .chevron {
   transition: .5s;
 }
