@@ -1,0 +1,29 @@
+@use 'styles/color.scss' as *;
+
+.item {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+  padding: 4px;
+
+  &:hover {
+    background: $background2;
+  }
+
+  & span {
+    margin-left: 4px;
+  }
+}
+
+.chevron {
+  transition: .5s;
+}
+
+.chevronActive {
+  transform: rotate(90deg);
+}
+
+.children {
+  padding-left: 24px;
+}
