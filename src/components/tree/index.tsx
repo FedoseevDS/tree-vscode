@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import { Fragment, useCallback, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import IconChevron from 'assets/chevron.svg?react';
 import IconFolder from 'assets/folder.svg?react';
@@ -8,6 +9,8 @@ import styles from './styles.module.scss';
 
 const RenderTree = ({ data }) => {
   const [showChildren, setShowChildren] = useState(new Set(null));
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleClick = useCallback(
     (id: string) => () => {
@@ -18,9 +21,14 @@ const RenderTree = ({ data }) => {
       } else {
         newSet.add(id);
         setShowChildren(newSet);
+        setSearchParams((e) => {
+          const newParams = new URLSearchParams(e);
+          newParams.set('id', id);
+          return newParams;
+        });
       }
     },
-    [showChildren],
+    [showChildren, setSearchParams],
   );
 
   return data.map((i) => {
@@ -29,7 +37,7 @@ const RenderTree = ({ data }) => {
     return (
       <Fragment key={i.id}>
         <button
-          className={styles.item}
+          className={cn(styles.item, { [styles.itemActive]: searchParams.get('id') === i.id })}
           onClick={handleClick(i.id)}
         >
           <IconChevron
