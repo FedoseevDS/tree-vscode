@@ -43,6 +43,8 @@ export default tseslint.config(
             value: {
               'internal-assets': ['assets', 'assets/*'],
               'internal-components': ['components', 'components/*'],
+              'internal-context': ['context', 'context/*'],
+              'internal-hooks': ['hooks', 'hooks/*'],
               'internal-pages': ['pages', 'pages/*'],
               'internal-styles': ['styles', 'styles/*'],
             },
@@ -56,6 +58,8 @@ export default tseslint.config(
             'internal',
             'internal-assets',
             'internal-components',
+            'internal-context',
+            'internal-hooks',
             'internal-pages',
             ['parent-type', 'sibling-type', 'index-type'],
             ['parent', 'sibling', 'index'],
