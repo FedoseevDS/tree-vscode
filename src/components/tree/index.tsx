@@ -22,11 +22,13 @@ import { handleTree } from './utils';
 import styles from './styles.module.scss';
 
 const RenderTree = ({
+  currentId,
   data,
   onData: setData,
   onStateButton,
   stateButton,
 }: {
+  currentId: null | string;
   data: [] | Array<Node> | undefined;
   onData?: void;
   onStateButton: Dispatch<SetStateAction<string>> | null;
@@ -38,7 +40,6 @@ const RenderTree = ({
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentId = useMemo(() => searchParams.get('id'), [searchParams]);
   const isEdit = useMemo(() => stateButton === 'edit', [stateButton]);
 
   const handleClick = useCallback(
@@ -67,9 +68,9 @@ const RenderTree = ({
   const onInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
     (e) => {
       if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-        setData((prevData: Array<Node>) => {
+        setData((prev: Array<Node>) => {
           const result = handleTree({
-            data: prevData ? [...prevData] : [],
+            data: prev ? [...prev] : [],
             name: value,
             paramsId: searchParams.get('id') || '',
             type: stateButton,
@@ -78,6 +79,12 @@ const RenderTree = ({
 
           return result as Array<Node> | undefined;
         });
+        if (onStateButton) {
+          onStateButton('');
+        }
+        setValue('');
+      }
+      if (e.code === 'Escape') {
         if (onStateButton) {
           onStateButton('');
         }
@@ -104,7 +111,9 @@ const RenderTree = ({
             {i.type === 'createFolder' && (
               <>
                 <IconChevron
-                  className={cn(styles.chevron, { [styles.chevronActive]: showChildren.has(i.id) })}
+                  className={cn(styles.chevron, {
+                    [styles.chevronActive]: showChildren.has(i.id),
+                  })}
                 />
                 <IconFolder />
               </>
@@ -142,6 +151,7 @@ const RenderTree = ({
           {isChildren && showChildren.has(i.id) && (
             <div className={styles.children}>
               <RenderTree
+                currentId={currentId}
                 data={i.children}
                 onData={setData}
                 onStateButton={onStateButton}
