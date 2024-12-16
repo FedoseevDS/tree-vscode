@@ -24,42 +24,26 @@ import styles from './styles.module.scss';
 const RenderTree = ({
   currentId,
   data,
+  onButtonClick,
   onData: setData,
   onStateButton,
+  showChildren,
   stateButton,
 }: {
   currentId: null | string;
   data: [] | Array<Node> | undefined;
+  onButtonClick: (id: string) => () => void;
   onData?: void;
   onStateButton: Dispatch<SetStateAction<string>> | null;
+  showChildren: Set<unknown>;
   stateButton: string;
 }) => {
-  const [showChildren, setShowChildren] = useState(new Set(null));
   const [value, setValue] = useState<number | readonly string[] | string | undefined>('');
   const [isCreateItem, setIsCreateItem] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const isEdit = useMemo(() => stateButton === 'edit', [stateButton]);
-
-  const handleClick = useCallback(
-    (id: string) => () => {
-      const newSet = new Set(showChildren);
-      if (showChildren.has(id)) {
-        newSet.delete(id);
-        setShowChildren(newSet);
-      } else {
-        newSet.add(id);
-        setShowChildren(newSet);
-        setSearchParams((e) => {
-          const newParams = new URLSearchParams(e);
-          newParams.set('id', id);
-          return newParams;
-        });
-      }
-    },
-    [showChildren, setSearchParams],
-  );
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setValue(e?.target?.value);
@@ -106,13 +90,13 @@ const RenderTree = ({
         <Fragment key={i.id}>
           <button
             className={cn(styles.item, { [styles.itemActive]: searchParams.get('id') === i.id })}
-            onClick={handleClick(i.id)}
+            onClick={onButtonClick(i.id)}
           >
             {i.type === 'createFolder' && (
               <>
                 <IconChevron
                   className={cn(styles.chevron, {
-                    [styles.chevronActive]: showChildren.has(i.id),
+                    [styles.chevronActive]: showChildren?.has(i.id) || false,
                   })}
                 />
                 <IconFolder />
@@ -149,12 +133,15 @@ const RenderTree = ({
             />
           )}
           {isChildren && showChildren.has(i.id) && (
+            // {isChildren && (
             <div className={styles.children}>
               <RenderTree
                 currentId={currentId}
                 data={i.children}
+                onButtonClick={onButtonClick}
                 onData={setData}
                 onStateButton={onStateButton}
+                showChildren={showChildren}
                 stateButton={stateButton}
               />
             </div>
